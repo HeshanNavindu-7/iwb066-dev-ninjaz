@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glova_frontend/Screens/Home/home.dart';
 import 'package:glova_frontend/Screens/Login/signinPage.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert'; // Import this to handle JSON responses
 
 class SignUp_Page extends StatefulWidget {
   const SignUp_Page({super.key});
@@ -16,24 +17,31 @@ class _SignUpPageState extends State<SignUp_Page> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController =
+      TextEditingController(); // Added confirm password controller
 
   String phoneNumberErrorText = '';
+  String passwordErrorText = '';
 
   Future<void> signUp() async {
     // Your backend endpoint URL
     String url =
-        'http://172.20.16.1:8080/addUser'; // Set your backend API URL here
+        'http://192.168.1.4:8080/api/addUser'; // Set your backend API URL here
 
     try {
       final response = await http.post(
         Uri.parse(url),
-        body: {
-          'name': firstNameController.text,
-          'age': ageController.text,
+        headers: {
+          'Content-Type': 'application/json'
+        }, // Set content type to JSON
+        body: jsonEncode({
+          'first_name':
+              firstNameController.text, // Updated to match your database
+          'age': int.tryParse(ageController.text) ?? 0,
           'email': emailController.text,
           'phone_number': phoneNumberController.text,
           'password': passwordController.text,
-        },
+        }),
       );
 
       if (response.statusCode == 201) {
@@ -46,11 +54,15 @@ class _SignUpPageState extends State<SignUp_Page> {
         );
       } else {
         // Request failed
+        final responseBody = json.decode(response.body);
+        _showErrorDialog(responseBody['message'] ??
+            'Sign up failed.'); // Show error message from backend if available
         print('Sign up failed with status: ${response.statusCode}');
       }
     } catch (e) {
       // Error occurred
       print('Error: $e');
+      _showErrorDialog('An error occurred. Please try again.');
     }
   }
 
@@ -97,11 +109,8 @@ class _SignUpPageState extends State<SignUp_Page> {
                       buildPhoneNumberField(),
                       buildTextField(
                           passwordController, 'Password', Icons.lock),
-                      buildTextField(
-                          null,
-                          'Confirm Password',
-                          Icons
-                              .lock), // Add your controller for confirm password
+                      buildTextField(confirmPasswordController,
+                          'Confirm Password', Icons.lock),
 
                       ElevatedButton(
                         onPressed: () {
@@ -143,6 +152,7 @@ class _SignUpPageState extends State<SignUp_Page> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
         child: TextField(
           controller: controller,
+          obscureText: hintText.contains('Password'), // Hide password text
           decoration: InputDecoration(
             prefixIcon: Icon(icon),
             hintText: hintText,
@@ -206,13 +216,15 @@ class _SignUpPageState extends State<SignUp_Page> {
         ageController.text.isEmpty ||
         emailController.text.isEmpty ||
         phoneNumberController.text.isEmpty ||
-        passwordController.text.isEmpty) {
-      // Show error message if any required field is empty
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
       _showErrorDialog('Please fill in all required fields.');
       return false;
     } else if (phoneNumberErrorText.isNotEmpty) {
-      // Show error message if phone number is invalid
       _showErrorDialog(phoneNumberErrorText);
+      return false;
+    } else if (passwordController.text != confirmPasswordController.text) {
+      _showErrorDialog('Passwords do not match.');
       return false;
     }
     return true;
@@ -251,8 +263,7 @@ class _SignUpPageState extends State<SignUp_Page> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => SignInPage()), // Corrected class name
+                MaterialPageRoute(builder: (context) => SignInPage()),
               );
             },
             child: const Text(
