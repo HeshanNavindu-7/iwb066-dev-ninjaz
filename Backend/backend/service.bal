@@ -12,6 +12,16 @@ type User record {
     string password;
 };
 
+type Product record {
+    int product_id?;
+    string product_name;
+    int price;
+    string category; // This should be 'category'
+    string product_details;
+    string? image_path;
+};
+
+
 // Configurable variables for MySQL connection
 configurable string HOST = ?;
 configurable int PORT = ?;
@@ -36,6 +46,21 @@ service /api on new http:Listener(8080) {
             // Log and return the error message
             io:println("Error adding user: ", result.message());
             return error("Failed to add user: " + result.message());
+        }
+    }
+
+    // POST /api/addProduct - Add a new product
+    resource function post addProduct(@http:Payload Product product) returns json|error {
+        int|error result = addProduct(product);
+
+        if result is int {
+            // Respond with a success message and the new product's ID
+            json response = {message: "Product added successfully", productId: result};
+            return response;
+        } else {
+            // Log and return the error message
+            io:println("Error adding product: ", result.message());
+            return error("Failed to add product: " + result.message());
         }
     }
 
@@ -73,6 +98,29 @@ isolated function addUser(User newUser) returns int|error {
     }
 }
 
+// Function to add a product to the database
+isolated function addProduct(Product newProduct) returns int|error {
+    // Secure parameterized query for inserting product data
+    sql:ParameterizedQuery insertQuery = `INSERT INTO products 
+                                          (product_name, price, category, product_details,image_path) 
+                                          VALUES (${newProduct.product_name}, 
+                                                  ${newProduct.price}, 
+                                                  ${newProduct.category}, 
+                                                  ${newProduct.product_details},
+                                                  ${newProduct.image_path})`;
+
+    // Execute query with the appropriate product data
+    sql:ExecutionResult result = check dbClient->execute(insertQuery);
+
+    // Retrieve and return the last inserted ID if successful
+    int|string? lastInsertId = result.lastInsertId;
+    if lastInsertId is int {
+        return lastInsertId; // Return the product ID
+    } else {
+        return error("Failed to retrieve the last inserted ID");
+    }
+}
+
 // Function to login using email and password
 isolated function loginByEmailPassword(string email, string password) returns string|error {
     // SQL query to retrieve user by email
@@ -96,4 +144,3 @@ isolated function loginByEmailPassword(string email, string password) returns st
         return error("User not found");
     }
 }
-
