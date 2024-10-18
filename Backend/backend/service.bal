@@ -16,7 +16,7 @@ type Product record {
     int product_id?;
     string product_name;
     int price;
-    string category; // This should be 'category'
+    string category;
     string product_details;
     string? image_path;
 };
@@ -80,6 +80,16 @@ service /api on new http:Listener(8080) {
             return error("Failed to login: " + result.message());
         }
     }
+       // GET /api/products - Retrieve all product details
+    // resource function get products() returns Product[]|error {
+    //     Product[]|error products = getAllProducts();
+
+    //     if products is Product[] {
+    //         return products;
+    //     } else {
+    //         return error("Failed to retrieve products: " + products.message());
+    //     }
+    // }
 }
 
 // Function to add a user to the database
@@ -92,7 +102,7 @@ isolated function addUser(User newUser) returns int|error {
 
     int|string? lastInsertId = result.lastInsertId;
     if lastInsertId is int {
-        return lastInsertId; // Return the ID of the newly added user
+        return lastInsertId; 
     } else {
         return error("Failed to retrieve the last inserted ID");
     }
@@ -115,11 +125,37 @@ isolated function addProduct(Product newProduct) returns int|error {
     // Retrieve and return the last inserted ID if successful
     int|string? lastInsertId = result.lastInsertId;
     if lastInsertId is int {
-        return lastInsertId; // Return the product ID
+        return lastInsertId; 
     } else {
         return error("Failed to retrieve the last inserted ID");
     }
 }
+
+// Function to retrieve all products from the database
+// isolated function getAllProducts() returns Product[]|error {
+//     sql:ParameterizedQuery selectQuery = `SELECT product_id, product_name, price, category, product_details, image_path 
+//                                           FROM products`;
+
+//     // Create a stream from the query using the correct method for SELECT statements
+//     stream<Product, sql:Error> productStream = check dbClient->query(selectQuery);
+
+//     // Collect all products using a list
+//     Product[] products = [];
+
+//     // Using a foreach to collect products from the stream
+//     foreach var result in productStream {
+//         if result is Product {
+//             products.push(result);
+//         } else if result is sql:Error {
+//             return error("Error retrieving products: " + result.message());
+//         }
+//     }
+
+//     return products;
+// }
+
+
+
 
 // Function to login using email and password
 isolated function loginByEmailPassword(string email, string password) returns string|error {

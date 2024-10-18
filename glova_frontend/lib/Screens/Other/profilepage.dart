@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
 import 'package:glova_frontend/Screens/Home/home.dart';
+import 'package:glova_frontend/Screens/Market/addProduct.dart';
 import 'package:glova_frontend/Screens/Other/custom_bottom_navigation_bar.dart';
 import 'package:glova_frontend/Screens/Other/myappointments.dart';
 import 'package:glova_frontend/Screens/Other/mysaved.dart';
@@ -249,17 +250,17 @@ class ProfilePageState extends State<ProfilePage> {
                   const Divider(),
                   GestureDetector(
                     onTap: () {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const Faq(),
-                      //   ),
-                      // );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddProductScreen(),
+                        ),
+                      );
                     },
                     child: const ListTile(
                       leading: Icon(Icons.help_outline, color: Colors.grey),
-                      title: Text('FAQs'),
-                      trailing: Icon(Icons.arrow_forward_ios),
+                      title: Text('Sell Product'),
+                      trailing: Icon(Icons.sell),
                     ),
                   ),
                   const Divider(),
