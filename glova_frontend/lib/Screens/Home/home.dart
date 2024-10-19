@@ -7,9 +7,7 @@ import 'package:glova_frontend/Screens/Other/ambulance.dart';
 import 'package:glova_frontend/Screens/Other/custom_bottom_navigation_bar.dart';
 import 'package:glova_frontend/Screens/Other/doctorRecommendation.dart';
 import 'package:glova_frontend/Screens/Other/hospitals.dart';
-
 import 'package:glova_frontend/Screens/Other/notifications.dart';
-
 import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {

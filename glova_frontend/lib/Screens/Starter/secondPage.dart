@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:glova_frontend/Screens/Login/signinPage.dart';
 import 'package:glova_frontend/Screens/Signup/signUpPage.dart';
 
@@ -63,7 +61,7 @@ class SecondPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUp_Page()),
+                    MaterialPageRoute(builder: (context) => SignUpPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

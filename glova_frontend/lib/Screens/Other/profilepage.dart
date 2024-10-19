@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
@@ -9,7 +10,6 @@ import 'package:glova_frontend/Screens/Other/myappointments.dart';
 import 'package:glova_frontend/Screens/Other/mysaved.dart';
 import 'package:glova_frontend/Screens/Other/paymentmethod.dart';
 import 'package:glova_frontend/Screens/Signup/signUpPage.dart';
-
 import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
@@ -61,7 +61,7 @@ class ProfilePageState extends State<ProfilePage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const SignUp_Page(),
+            builder: (context) => const SignUpPage(),
           ),
         );
       } else {
