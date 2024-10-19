@@ -1,32 +1,30 @@
+import 'dart:convert'; // Import this to handle JSON responses
+
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/Screens/Home/home.dart';
 import 'package:glova_frontend/Screens/Login/signinPage.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // Import this to handle JSON responses
 
-class SignUp_Page extends StatefulWidget {
-  const SignUp_Page({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUp_Page> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController =
-      TextEditingController(); // Added confirm password controller
+  TextEditingController confirmPasswordController = TextEditingController();
 
   String phoneNumberErrorText = '';
-  String passwordErrorText = '';
 
   Future<void> signUp() async {
-    // Your backend endpoint URL
     String url =
-        'http://192.168.1.4:8080/api/addUser'; // Set your backend API URL here
+        'http://192.168.1.103:8080/api/addUser'; // Set your backend API URL here
 
     try {
       final response = await http.post(
@@ -35,8 +33,7 @@ class _SignUpPageState extends State<SignUp_Page> {
           'Content-Type': 'application/json'
         }, // Set content type to JSON
         body: jsonEncode({
-          'first_name':
-              firstNameController.text, // Updated to match your database
+          'first_name': firstNameController.text,
           'age': int.tryParse(ageController.text) ?? 0,
           'email': emailController.text,
           'phone_number': phoneNumberController.text,
@@ -45,22 +42,17 @@ class _SignUpPageState extends State<SignUp_Page> {
       );
 
       if (response.statusCode == 201) {
-        // Request successful
         print('Sign up successful');
-        // Navigate to the home screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Home()),
         );
       } else {
-        // Request failed
         final responseBody = json.decode(response.body);
-        _showErrorDialog(responseBody['message'] ??
-            'Sign up failed.'); // Show error message from backend if available
+        _showErrorDialog(responseBody['message'] ?? 'Sign up failed.');
         print('Sign up failed with status: ${response.statusCode}');
       }
     } catch (e) {
-      // Error occurred
       print('Error: $e');
       _showErrorDialog('An error occurred. Please try again.');
     }
@@ -69,103 +61,113 @@ class _SignUpPageState extends State<SignUp_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/Newback.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Align(
-                        alignment: Alignment(-1, -0.5),
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 50.0, left: 130),
-                          child: Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Input fields
-                      buildTextField(
-                          firstNameController, 'User Name', Icons.person),
-                      buildTextField(
-                          ageController, 'Age', Icons.calendar_today),
-                      buildTextField(emailController, 'Email', Icons.email),
-                      buildPhoneNumberField(),
-                      buildTextField(
-                          passwordController, 'Password', Icons.lock),
-                      buildTextField(confirmPasswordController,
-                          'Confirm Password', Icons.lock),
-
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_validateFields()) {
-                            signUp();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF004080),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                        ),
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _buildSignInPrompt(),
-              ],
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        children: [
+          // Background Image
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/SignIn.png'), // Set your background image path here
+                fit: BoxFit.cover, // Cover the entire screen
+              ),
             ),
-          ],
-        ),
+          ),
+          // Gradient Overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withOpacity(0), // Dark overlay at the top
+                  Colors.transparent, // Transparent in the middle
+                  Color.fromARGB(255, 57, 138, 175)
+                      .withOpacity(0.6), // Dark overlay at the bottom
+                ],
+              ),
+            ),
+          ),
+          // Signup Form Content
+          SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 50),
+                  const Center(
+                    child: Text(
+                      'Create an Account',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  buildTextField(
+                      firstNameController, 'Full Name', Icons.person),
+                  buildTextField(ageController, 'Age', Icons.calendar_today),
+                  buildTextField(emailController, 'Email', Icons.email),
+                  buildPhoneNumberField(),
+                  buildTextField(passwordController, 'Password', Icons.lock),
+                  buildTextField(confirmPasswordController, 'Confirm Password',
+                      Icons.lock),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_validateFields()) {
+                        signUp();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color(0xFF1A237E), // Modern blue shade
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(30), // Rounded button
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  _buildSignInPrompt(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   // Helper method to build text fields
   Widget buildTextField(
-      TextEditingController? controller, String hintText, IconData icon) {
-    return Align(
-      alignment: const Alignment(0, 0.06),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-        child: TextField(
-          controller: controller,
-          obscureText: hintText.contains('Password'), // Hide password text
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon),
-            hintText: hintText,
-            hintStyle:
-                const TextStyle(color: Color.fromARGB(255, 212, 207, 207)),
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            ),
-            filled: true,
-            fillColor: const Color(0xFF282635).withOpacity(0.5),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+      TextEditingController controller, String hintText, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        controller: controller,
+        obscureText: hintText.contains('Password'),
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.white),
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.white70),
+          filled: true,
+          fillColor: Colors.black.withOpacity(0.3),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
           ),
         ),
       ),
@@ -174,43 +176,37 @@ class _SignUpPageState extends State<SignUp_Page> {
 
   // Helper method to build the phone number field with validation
   Widget buildPhoneNumberField() {
-    return Align(
-      alignment: const Alignment(0, 0.06),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-        child: TextField(
-          controller: phoneNumberController,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.phone),
-            hintText: 'Phone Number',
-            hintStyle:
-                const TextStyle(color: Color.fromARGB(255, 212, 207, 207)),
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.blue, width: 2.0),
-            ),
-            filled: true,
-            fillColor: const Color(0xFF282635).withOpacity(0.5),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        controller: phoneNumberController,
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.phone, color: Colors.white),
+          hintText: 'Phone Number',
+          hintStyle: const TextStyle(color: Colors.white70),
+          filled: true,
+          fillColor: Colors.black.withOpacity(0.3),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
           ),
-          onChanged: (value) {
-            if (!RegExp(r'^[0-9]*$').hasMatch(value)) {
-              setState(() {
-                phoneNumberErrorText = 'Please enter a valid phone number';
-              });
-            } else {
-              setState(() {
-                phoneNumberErrorText = '';
-              });
-            }
-          },
         ),
+        onChanged: (value) {
+          if (!RegExp(r'^[0-9]*$').hasMatch(value)) {
+            setState(() {
+              phoneNumberErrorText = 'Please enter a valid phone number';
+            });
+          } else {
+            setState(() {
+              phoneNumberErrorText = '';
+            });
+          }
+        },
       ),
     );
   }
 
-  // Method to validate fields before signup
   bool _validateFields() {
     if (firstNameController.text.isEmpty ||
         ageController.text.isEmpty ||
@@ -230,7 +226,6 @@ class _SignUpPageState extends State<SignUp_Page> {
     return true;
   }
 
-  // Method to show error dialog
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -251,14 +246,15 @@ class _SignUpPageState extends State<SignUp_Page> {
     );
   }
 
-  // Method to build sign-in prompt
   Widget _buildSignInPrompt() {
     return Center(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(width: 80),
-          const Text("If you already have an account,"),
-          const SizedBox(width: 5),
+          const Text(
+            "Already have an account? ",
+            style: TextStyle(color: Colors.white70),
+          ),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -268,7 +264,10 @@ class _SignUpPageState extends State<SignUp_Page> {
             },
             child: const Text(
               "Sign In",
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Color.fromARGB(255, 10, 118, 233),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
