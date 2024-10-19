@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserDataManager {
   static Future<Map<String, dynamic>> fetchUserDetails() async {
-    String baseUrl = dotenv.env['API_URL'] ?? '';
+    String baseUrl = dotenv.env['192.168.1.7'] ?? '';
     final response = await http.get(Uri.parse('$baseUrl/users/'));
 
     if (response.statusCode == 200) {
