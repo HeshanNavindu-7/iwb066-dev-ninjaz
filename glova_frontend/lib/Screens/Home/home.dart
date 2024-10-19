@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/APIs/doctorDetails.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
+import 'package:glova_frontend/Screens/Market/Market.dart';
 import 'package:glova_frontend/Screens/Other/aboutdoctor.dart';
 import 'package:glova_frontend/Screens/Other/ambulance.dart';
 import 'package:glova_frontend/Screens/Other/custom_bottom_navigation_bar.dart';
 import 'package:glova_frontend/Screens/Other/doctorRecommendation.dart';
 import 'package:glova_frontend/Screens/Other/hospitals.dart';
-import 'package:glova_frontend/Screens/Other/market.dart';
+
 import 'package:glova_frontend/Screens/Other/notifications.dart';
 
 import 'package:http/http.dart' as http;
@@ -116,7 +117,8 @@ class _HomeState extends State<Home> {
                       'Market',
                       () => Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const Market()),
+                        MaterialPageRoute(
+                            builder: (context) => MarketPlaceScreen()),
                       ),
                     ),
                     // _buildNavigationIcon(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/Screens/Home/home.dart';
+import 'package:glova_frontend/Screens/Market/Market.dart';
+import 'package:glova_frontend/Screens/Other/midassistaichat.dart';
 
 import 'package:glova_frontend/Screens/Other/profilepage.dart';
 
@@ -31,16 +33,16 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         );
         break;
       case 1:
-        // Navigator.push(
-        //   // context,
-        //   // MaterialPageRoute(builder: (context) => PdfUploader()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MarketPlaceScreen()),
+        );
         break;
       case 2:
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(
-        //     builder: (context) => ImageUploader(
+        //     builder: (context) => ImageUploder(
         //       imageFilePicker: imageFilePicker,
         //       client: client,
         //     ),
@@ -48,10 +50,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         // );
         break;
       case 3:
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => MedAssistAi()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MedAssistAiChat()),
+        );
         break;
       case 4:
         Navigator.push(

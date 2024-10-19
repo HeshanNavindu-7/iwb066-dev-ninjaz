@@ -1,31 +1,29 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class ProductService {
-  static const String _baseUrl =
-      'https://your-backend-url.com/api/products'; // Replace with your API endpoint
+  final int productId;
+  final String productName;
+  final int price;
+  final String category;
+  final String productDetails;
+  final String? imagePath;
 
-  // Function to send product data to the backend
-  Future<http.Response> addProduct(Map<String, dynamic> productData) async {
-    final url = Uri.parse(_baseUrl);
+  ProductService({
+    required this.productId,
+    required this.productName,
+    required this.price,
+    required this.category,
+    required this.productDetails,
+    this.imagePath,
+  });
 
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body:
-            jsonEncode(productData), // Convert the product data to JSON format
-      );
-
-      if (response.statusCode == 201) {
-        return response;
-      } else {
-        throw Exception('Failed to add product');
-      }
-    } catch (error) {
-      throw Exception('Error: $error');
-    }
+  // Factory method to create a Product from JSON
+  factory ProductService.fromJson(Map<String, dynamic> json) {
+    return ProductService(
+      productId: json['product_id'],
+      productName: json['product_name'],
+      price: json['price'],
+      category: json['category'],
+      productDetails: json['product_details'],
+      imagePath: json['image_path'],
+    );
   }
 }
