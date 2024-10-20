@@ -24,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> signUp() async {
     String url =
-        'http://192.168.1.103:8080/api/addUser'; // Set your backend API URL here
+        'http://192.168.1.7:8080/api/addUser'; // Set your backend API URL here
 
     try {
       final response = await http.post(
