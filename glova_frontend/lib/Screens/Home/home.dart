@@ -155,18 +155,40 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildDoctorCards() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildDoctorCard(doctorName ?? 'Doctor 1'),
-        _buildDoctorCard('Doctor 2'),
-      ],
+    // Dummy doctor data with placeholder names and specialties
+    final List<Map<String, String>> doctors = [
+      {
+        'name': 'Dr. Sarah Johnson',
+        'specialty': 'Cardiologist',
+        'distance': '800m away'
+      },
+      {
+        'name': 'Dr. John Doe',
+        'specialty': 'Dermatologist',
+        'distance': '1.2km away'
+      },
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: doctors.map((doctor) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _buildDoctorCard(
+              doctor['name']!,
+              doctor['specialty']!,
+              doctor['distance']!,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  Widget _buildDoctorCard(String name) {
+  Widget _buildDoctorCard(String name, String specialty, String distance) {
     return SizedBox(
-      width: 170,
+      width: 160, // Adjusted width to avoid overflow
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(
@@ -183,9 +205,10 @@ class _HomeState extends State<Home> {
                 );
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.asset(
-                  'assets/Doctor1.png',
+                  'assets/carosal/doc2.jpg',
                   height: 100,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -193,22 +216,22 @@ class _HomeState extends State<Home> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    'Cardiologist',
-                    style: TextStyle(
+                  const SizedBox(height: 4),
+                  Text(
+                    specialty,
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
@@ -226,8 +249,8 @@ class _HomeState extends State<Home> {
                       const Icon(Icons.location_on,
                           color: Colors.grey, size: 14),
                       const SizedBox(width: 4),
-                      const Text('800m away',
-                          style: TextStyle(
+                      Text(distance,
+                          style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey)),
@@ -250,7 +273,7 @@ class _HomeState extends State<Home> {
         autoPlay: true,
         autoPlayCurve: Curves.fastOutSlowIn,
         enableInfiniteScroll: true,
-        autoPlayAnimationDuration: Duration(milliseconds: 1000),
+        autoPlayAnimationDuration: const Duration(milliseconds: 1000),
         viewportFraction: 1,
       ),
       items: [
@@ -261,7 +284,7 @@ class _HomeState extends State<Home> {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-              margin: EdgeInsets.all(5.0),
+              margin: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(
@@ -277,26 +300,34 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildFeaturedProducts() {
+    // Dummy skincare products
+    final List<Map<String, String>> products = [
+      {'imagePath': 'assets/beauty.png', 'title': 'Aloe Vera Gel'},
+      {'imagePath': 'assets/carosal/p1.png', 'title': 'Vitamin C Serum'},
+      {'imagePath': 'assets/p2.jpg', 'title': 'Sunscreen SPF'},
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 8.0),
           child: Text(
-            'Featured Products',
+            'Featured Skincare Products',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 150,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              _buildProductCard('assets/beauty.png', 'Product 1'),
-              _buildProductCard('assets/beauty.png', 'Product 2'),
-              _buildProductCard('assets/beauty.png', 'Product 3'),
-            ],
+        const SizedBox(height: 16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: products.map((product) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child:
+                    _buildProductCard(product['imagePath']!, product['title']!),
+              );
+            }).toList(),
           ),
         ),
       ],
@@ -304,27 +335,39 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildProductCard(String imagePath, String title) {
-    return Container(
-      width: 120,
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              imagePath,
-              height: 100,
-              width: 120,
-              fit: BoxFit.cover,
+    return SizedBox(
+      width: 150,
+      height: 180,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.asset(
+                imagePath,
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

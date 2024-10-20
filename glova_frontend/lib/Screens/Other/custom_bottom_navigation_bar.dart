@@ -92,7 +92,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat),
-              label: 'MediChat',
+              label: 'GlovaChat',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

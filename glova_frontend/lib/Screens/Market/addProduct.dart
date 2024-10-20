@@ -68,6 +68,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Product added successfully!')),
           );
+          // Optionally, clear the form after submission
+          _clearForm();
         } else {
           // Failure - handle error
           ScaffoldMessenger.of(context).showSnackBar(
@@ -82,60 +84,126 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
+  // Function to clear the form fields after submission
+  void _clearForm() {
+    _productNameController.clear();
+    _priceController.clear();
+    _categoryController.clear();
+    _productDetailsController.clear();
+    setState(() {
+      _imageFile = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Product')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // Product Name Field
-              TextFormField(
-                controller: _productNameController,
-                decoration: InputDecoration(labelText: 'Product Name'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter product name' : null,
-              ),
-              // Price Field
-              TextFormField(
-                controller: _priceController,
-                decoration: InputDecoration(labelText: 'Price'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Enter price' : null,
-              ),
-              // Category Field
-              TextFormField(
-                controller: _categoryController,
-                decoration: InputDecoration(labelText: 'Category'),
-                validator: (value) => value!.isEmpty ? 'Enter category' : null,
-              ),
-              // Product Details Field
-              TextFormField(
-                controller: _productDetailsController,
-                decoration: InputDecoration(labelText: 'Product Details'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter product details' : null,
-              ),
-              // Image Uploader
-              SizedBox(height: 20),
-              _imageFile != null
-                  ? Image.file(_imageFile!,
-                      height: 150, width: 150) // Show selected image
-                  : Text('No image selected.'),
-              ElevatedButton(
-                onPressed: _pickImage, // Pick image logic
-                child: Text('Upload Image'),
-              ),
-              Spacer(),
-              // Submit Button
-              ElevatedButton(
-                onPressed: _submitForm, // Submit form logic
-                child: Text('Add Product'),
-              ),
-            ],
+      appBar: AppBar(
+        title: Text('Add Product'),
+        centerTitle: true, // Center the title
+        backgroundColor: Color.fromARGB(255, 173, 216, 230), // AppBar color
+      ),
+      body: SingleChildScrollView(
+        // Handle overflow
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Product Name Field
+                TextFormField(
+                  controller: _productNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Name',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter product name' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Price Field
+                TextFormField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'Price',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => value!.isEmpty ? 'Enter price' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Category Field
+                TextFormField(
+                  controller: _categoryController,
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter category' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Product Details Field
+                TextFormField(
+                  controller: _productDetailsController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Details',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter product details' : null,
+                ),
+                SizedBox(height: 20),
+
+                // Image Uploader
+                _imageFile != null
+                    ? Image.file(_imageFile!,
+                        height: 150, width: 150) // Show selected image
+                    : Text('No image selected.'),
+                ElevatedButton(
+                  onPressed: _pickImage, // Pick image logic
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                    // Button color
+                  ),
+                  child: Text('Upload Image'),
+                ),
+                SizedBox(height: 20), // Spacing before submit button
+
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _submitForm, // Submit form logic
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                    backgroundColor:
+                        Color.fromARGB(255, 173, 216, 230), // Button color
+                  ),
+                  child: Text('Add Product'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -157,6 +157,10 @@ flutter:
     - assets/carosal/img1.png
     - assets/carosal/img2.png
     - assets/carosal/img3.png
+    - assets/carosal/p1.png
+    - assets/p2.jpg
+    - assets/carosal/doc2.jpg
+    - assets/carosal/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
