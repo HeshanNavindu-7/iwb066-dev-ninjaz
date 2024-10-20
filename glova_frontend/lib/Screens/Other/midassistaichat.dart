@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // Import the HTTP package
 import 'dart:convert'; // For JSON encoding/decoding
+
+import 'package:flutter/material.dart';
 import 'package:glova_frontend/Screens/Home/home.dart';
+import 'package:http/http.dart' as http; // Import the HTTP package
 
 class MedAssistAiChat extends StatefulWidget {
   const MedAssistAiChat({Key? key}) : super(key: key);
@@ -40,14 +41,14 @@ class _MedAssistAiChatState extends State<MedAssistAiChat> {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: json.encode({"message": message}), // Send the message as JSON
+        body: json.encode({"question": message}), // Send the message as JSON
       );
 
       if (response.statusCode == 200) {
         // Parse the response if the call is successful
         final responseBody = json.decode(response.body);
         String apiResponse =
-            responseBody['response']; // Adjust based on your response structure
+            responseBody['answer']; // Adjust based on your response structure
 
         setState(() {
           _messages.add(apiResponse); // Add API response to the messages list
