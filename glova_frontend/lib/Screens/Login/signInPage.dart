@@ -17,7 +17,7 @@ class _SignUpPageState extends State<SignInPage> {
   TextEditingController passwordController = TextEditingController();
   bool _rememberMe = false;
   Future<void> signIn() async {
-    String url = 'http://192.168.1.103:8080/api/login';
+    String url = 'http://192.168.1.101:8080/api/login';
 
     try {
       final response = await http.post(
@@ -97,7 +97,6 @@ class _SignUpPageState extends State<SignInPage> {
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -143,7 +142,7 @@ class _SignUpPageState extends State<SignInPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1565C0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
@@ -180,7 +179,7 @@ class _SignUpPageState extends State<SignInPage> {
           filled: true,
           fillColor: Colors.black.withOpacity(0.5),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
           ),
         ),

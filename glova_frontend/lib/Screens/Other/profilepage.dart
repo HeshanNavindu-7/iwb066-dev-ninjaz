@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
@@ -35,10 +34,9 @@ class ProfilePageState extends State<ProfilePage> {
           await UserDataManager.fetchUserDetails();
       setState(() {
         userName = data['name'];
-        userAge = data['age']; // Add this line to fetch the age
+        userAge = data['age'];
       });
     } catch (e) {
-      // Handle error
       print('Error: $e');
     }
   }
@@ -53,6 +51,10 @@ class ProfilePageState extends State<ProfilePage> {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         final message = responseData['success'];
+
+        // Clear any stored user data or tokens here if applicable
+        // For example:
+        // await UserDataManager.clearUserData();
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(message),
@@ -97,7 +99,6 @@ class ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // Wallpaper
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/profileback.png'),
@@ -136,8 +137,7 @@ class ProfilePageState extends State<ProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage(
-                        'assets/profilegirl.png'), // Use an icon if you want to remove this image
+                    backgroundImage: AssetImage('assets/profilegirl.png'),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -148,13 +148,6 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Text(
-                  //   userAge != null ? 'Age: $userAge' : 'Age not available',
-                  //   style: const TextStyle(
-                  //     fontWeight: FontWeight.bold,
-                  //     fontSize: 16,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -258,9 +251,10 @@ class ProfilePageState extends State<ProfilePage> {
                       );
                     },
                     child: const ListTile(
-                      leading: Icon(Icons.help_outline, color: Colors.grey),
+                      leading: Icon(Icons.add_shopping_cart,
+                          color: Colors.grey), // Updated icon
                       title: Text('Sell Product'),
-                      trailing: Icon(Icons.sell),
+                      trailing: Icon(Icons.arrow_forward_ios),
                     ),
                   ),
                   const Divider(),

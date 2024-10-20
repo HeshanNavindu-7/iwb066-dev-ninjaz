@@ -67,7 +67,7 @@ class SecondPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffffffff),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Border radius
+                    borderRadius: BorderRadius.circular(50), // Border radius
                   ),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 30, vertical: 15), // Padding
@@ -95,7 +95,7 @@ class SecondPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF004080),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Border radius
+                    borderRadius: BorderRadius.circular(50), // Border radius
                   ),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 30, vertical: 15), // Padding
