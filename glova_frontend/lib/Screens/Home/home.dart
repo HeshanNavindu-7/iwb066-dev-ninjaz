@@ -1,16 +1,11 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/APIs/doctorDetails.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
-import 'package:glova_frontend/Screens/Market/Market.dart';
 import 'package:glova_frontend/Screens/Other/aboutdoctor.dart';
-import 'package:glova_frontend/Screens/Other/ambulance.dart';
 import 'package:glova_frontend/Screens/Other/custom_bottom_navigation_bar.dart';
 import 'package:glova_frontend/Screens/Other/doctorRecommendation.dart';
-import 'package:glova_frontend/Screens/Other/hospitals.dart';
 import 'package:glova_frontend/Screens/Other/notifications.dart';
-import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -22,7 +17,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String? userName;
   String? doctorName;
-  final http.Client client = http.Client();
 
   @override
   void initState() {
@@ -108,14 +102,10 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-
-                // Add the carousel section above the Top Doctors section
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: _buildImageCarousel(),
                 ),
-
-                // "Top Doctors" part moved below the carousel
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -176,11 +166,11 @@ class _HomeState extends State<Home> {
 
   Widget _buildDoctorCard(String name) {
     return SizedBox(
-      width: 170, // Increased width for a better appearance
+      width: 170,
       child: Card(
-        elevation: 5, // Adds shadow to the card
+        elevation: 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Rounded corners
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,9 +179,7 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutDoctor(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const AboutDoctor()),
                 );
               },
               child: ClipRRect(
@@ -207,8 +195,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center, // Center items horizontally
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     name,
@@ -216,7 +203,7 @@ class _HomeState extends State<Home> {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center, // Center text alignment
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 2),
                   const Text(
@@ -230,34 +217,20 @@ class _HomeState extends State<Home> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 18,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 18),
                       const SizedBox(width: 4),
-                      const Text(
-                        '4.5', // Placeholder for rating
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      const Text('4.5',
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500)),
                       const Spacer(),
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.grey,
-                        size: 14,
-                      ),
+                      const Icon(Icons.location_on,
+                          color: Colors.grey, size: 14),
                       const SizedBox(width: 4),
-                      const Text(
-                        '800m away',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      const Text('800m away',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey)),
                     ],
                   ),
                 ],
@@ -338,21 +311,18 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(10),
             child: Image.asset(
               imagePath,
-              width: 120,
               height: 100,
+              width: 120,
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 5),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),

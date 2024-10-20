@@ -4,21 +4,21 @@ import ballerina/sql;
 import ballerinax/mysql;
 
 type User record {
-    int id?;
+    int id?; // Optional ID
     string first_name;
     int age;
     string email;
     string phone_number;
-    string password;
+    string password; // Ensure this is handled securely in real applications
 };
 
 type Product record {
-    int product_id?;
+    int product_id?; // Optional product ID
     string product_name;
     int price;
     string category;
     string product_details;
-    string? image_path;
+    string? image_path; // Optional image path
 };
 
 // Configurable variables for MySQL connection
@@ -81,48 +81,21 @@ service /api on new http:Listener(8080) {
     }
 
     // GET /api/products - Retrieve all product details
-    // resource function get products() returns Product[]|error {
-    //     Product[]|error products = getAllProducts();
-
-    //     if products is Product[] {
-    //         return products;
-    //     } else {
-    //         return error("Failed to retrieve products: " + products.message());
-    //     }
-    // }
-
-    // GET /api/products - Retrieve all product details
-    // resource function get products() returns json|error {
-    //     Product[]|error products = getAllProducts();
-
-    //     if products is Product[] {
-    //         // Return the list of products as a JSON array
-    //         return products;
-    //     } else {
-    //         // Return error message if retrieving products failed
-    //         return error("Failed to retrieve products: " + products.message());
-    //     }
-    // }
-
-    // GET /api/products - Retrieve all product details
     resource function get products() returns Product[]|error {
-        Product[]|error products = getAllProducts();
+    Product[]|error products = getAllProducts();
 
-        if products is Product[] {
-            // Return the list of products as a JSON array
-            return products;
-        } else {
-            // Return error message if retrieving products failed
-            return error("Failed to retrieve products: " + products.message());
-        }
+    if products is Product[] {
+        // Return the list of products as a JSON array
+        return products;
+    } else {
+        // Return error message if retrieving products failed
+        return error("Failed to retrieve products: " + products.message());
     }
+}
 
 }
 
 // Function to retrieve all products from the database
-
-// Function to add a user to the database
-
 isolated function getAllProducts() returns Product[]|error {
     // Initialize an empty array to collect products
     Product[] products = [];
@@ -143,14 +116,15 @@ isolated function getAllProducts() returns Product[]|error {
     return products;
 }
 
+// Function to add a user to the database
 isolated function addUser(User newUser) returns int|error {
     sql:ParameterizedQuery insertQuery = `INSERT INTO users (first_name, age, email, phone_number, password) 
                                           VALUES (${newUser.first_name}, ${newUser.age}, ${newUser.email}, 
                                           ${newUser.phone_number}, ${newUser.password})`;
 
     sql:ExecutionResult result = check dbClient->execute(insertQuery);
-
     int|string? lastInsertId = result.lastInsertId;
+
     if lastInsertId is int {
         return lastInsertId;
     } else {
@@ -162,18 +136,16 @@ isolated function addUser(User newUser) returns int|error {
 isolated function addProduct(Product newProduct) returns int|error {
     // Secure parameterized query for inserting product data
     sql:ParameterizedQuery insertQuery = `INSERT INTO products 
-                                          (product_name, price, category, product_details,image_path) 
+                                          (product_name, price, category, product_details, image_path) 
                                           VALUES (${newProduct.product_name}, 
                                                   ${newProduct.price}, 
                                                   ${newProduct.category}, 
                                                   ${newProduct.product_details},
                                                   ${newProduct.image_path})`;
 
-    // Execute query with the appropriate product data
     sql:ExecutionResult result = check dbClient->execute(insertQuery);
-
-    // Retrieve and return the last inserted ID if successful
     int|string? lastInsertId = result.lastInsertId;
+
     if lastInsertId is int {
         return lastInsertId;
     } else {
@@ -181,33 +153,13 @@ isolated function addProduct(Product newProduct) returns int|error {
     }
 }
 
-// Function to retrieve all products from the database
-// isolated function getAllProducts() returns Product[]|error {
-//     sql:ParameterizedQuery selectQuery = `SELECT product_id, product_name, price, category, product_details, image_path 
-//                                            FROM products`;
-
-//     // Create a stream from the query using the correct method for SELECT statements
-//     stream<Product, sql:Error> productStream = check dbClient->query(selectQuery);
-
-//     //     // Collect all products using a list
-//     Product[] products = [];
-
-//     // Using a foreach to collect products from the stream
-//     foreach var result in productStream {
-//         if result is Product {
-//             products.push(result);
-//         } else if result is sql:Error {
-//             return error("Error retrieving products: " + result.message());
-//         }
-//     }
-
-//     return products;
-// }
-
 // Function to login using email and password
 isolated function loginByEmailPassword(string email, string password) returns string|error {
-    // SQL query to retrieve user by email
+    io:println("Attempting to log in user with email: ", email);
+    
+    // Log the SQL query before execution
     sql:ParameterizedQuery selectQuery = `SELECT first_name, password FROM users WHERE email = ${email}`;
+    io:println("Executing SQL query: ", selectQuery);
 
     // Execute the query and fetch the user row
     record {|string first_name; string password;|}|sql:Error? user = dbClient->queryRow(selectQuery);
