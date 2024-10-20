@@ -53,7 +53,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       // Make the POST request to the backend
       final url = Uri.parse(
-          'http://192.168.1.103:8080/api/addProduct'); // Replace with your backend URL
+          'http://192.168.1.7:8080/api/addProduct'); // Replace with your backend URL
       try {
         final response = await http.post(
           url,

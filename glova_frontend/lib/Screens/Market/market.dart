@@ -1,5 +1,4 @@
 import 'dart:convert'; // For JSON encoding and decoding
-
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/APIs/ProductService.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +22,7 @@ class _MarketPlaceScreenState extends State<MarketPlaceScreen> {
   // Function to fetch products from the backend
   Future<void> _fetchProducts() async {
     final url = Uri.parse(
-        'http://192.168.1.103:8080/api/products'); // Replace with your actual backend URL
+        'http://192.168.1.7:8080/api/products'); // Replace with your actual backend URL
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -56,14 +55,11 @@ class _MarketPlaceScreenState extends State<MarketPlaceScreen> {
         title: Text('Marketplace'),
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(), // Show loading spinner
-            )
+          ? Center(child: CircularProgressIndicator()) // Show loading spinner
           : _errorMessage.isNotEmpty
               ? Center(
                   child:
-                      Text(_errorMessage, style: TextStyle(color: Colors.red)),
-                )
+                      Text(_errorMessage, style: TextStyle(color: Colors.red)))
               : _products.isEmpty
                   ? Center(child: Text('No products available'))
                   : ListView.builder(
@@ -72,34 +68,37 @@ class _MarketPlaceScreenState extends State<MarketPlaceScreen> {
                         final product = _products[index];
 
                         // Constructing full image path if it's a relative path
-                        final imageUrl = product.imagePath != null
-                            ? product.imagePath!.startsWith('http')
+                        final imageUrl = product.imagePath != null &&
+                                product.imagePath!.isNotEmpty
+                            ? (product.imagePath!.startsWith('http')
                                 ? product.imagePath!
-                                : 'http://192.168.1.103:8080${product.imagePath!}' // Construct full URL if path is relative
+                                : 'http://192.168.1.7:8080${product.imagePath!}') // Construct full URL if path is relative
                             : 'https://via.placeholder.com/150'; // Use placeholder image if no image
 
                         return Card(
+                          elevation: 4.0,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
                           child: ListTile(
-                            leading: imageUrl.isNotEmpty
-                                ? Image.network(
-                                    imageUrl,
-                                    width: 50, // Set width
-                                    height: 50, // Set height
-                                    fit: BoxFit
-                                        .cover, // Ensure the image fits within the box
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(Icons
-                                          .broken_image); // Show fallback if image fails to load
-                                    },
-                                  )
-                                : Icon(
-                                    Icons.image), // Fallback icon if no image
-                            title: Text(product.productName),
+                            leading: Image.network(
+                              imageUrl,
+                              width: 50, // Set width
+                              height: 50, // Set height
+                              fit: BoxFit
+                                  .cover, // Ensure the image fits within the box
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(Icons
+                                    .broken_image); // Show fallback if image fails to load
+                              },
+                            ),
+                            title: Text(product.productName ?? 'No Name'),
                             subtitle: Text(
-                                '\$${product.price} - ${product.category}'),
+                              '\$${product.price?.toStringAsFixed(2) ?? 'N/A'} - ${product.category ?? 'Unknown Category'}',
+                            ),
                             trailing: Icon(Icons.arrow_forward),
                             onTap: () {
                               // Navigation to product details or another screen can be added here
+                              // Navigator.push(...);
                             },
                           ),
                         );
