@@ -26,8 +26,6 @@ In the healthcare sector, accurate data management is essential. By combining Ba
 ## YouTube Video
 [Watch our Demo on YouTube](https://youtu.be/tc_DDNoQwBA)
 
-## Feedback
-We value your feedback! Please share your thoughts on the recent hackathon to help us improve future events. Thank you! 😊
 
 ---
 
