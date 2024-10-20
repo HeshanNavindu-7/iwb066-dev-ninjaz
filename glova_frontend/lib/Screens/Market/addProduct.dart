@@ -1,4 +1,3 @@
-import 'dart:convert'; // For encoding JSON
 import 'dart:io'; // For File operations
 
 import 'package:flutter/material.dart';
@@ -11,16 +10,14 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
-  // Form key and controllers
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _productDetailsController =
       TextEditingController();
-  File? _imageFile; // To store the picked image file
+  File? _imageFile;
 
-  // Image picker instance
   final ImagePicker _picker = ImagePicker();
 
   // Function to handle image picking
@@ -32,7 +29,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _imageFile = File(pickedFile.path);
       });
     } else {
-      // Handle error or null image picking
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No image selected.')),
       );
@@ -42,36 +38,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
   // Function to handle the form submission
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Prepare the product data
-      Map<String, dynamic> productData = {
-        'product_name': _productNameController.text,
-        'price': int.parse(_priceController.text),
-        'category': _categoryController.text,
-        'product_details': _productDetailsController.text,
-        'image_path': _imageFile != null ? _imageFile!.path : null,
-      };
+      // Prepare the product data as a form field
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://192.168.1.100:8080/api/addProduct'),
+      );
 
-      // Make the POST request to the backend
-      final url = Uri.parse(
-          'http://192.168.1.103:8080/api/addProduct'); // Replace with your backend URL
+      // Add text fields as form fields
+      request.fields['product_name'] = _productNameController.text;
+      request.fields['price'] = _priceController.text;
+      request.fields['category'] = _categoryController.text;
+      request.fields['product_details'] = _productDetailsController.text;
+
+      // If an image is selected, add it as a multipart file
+      if (_imageFile != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'image', // field name in backend
+          _imageFile!.path,
+        ));
+      }
+
+      // Send the request
       try {
-        final response = await http.post(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(productData),
-        );
+        var streamedResponse = await request.send();
+        var response = await http.Response.fromStream(streamedResponse);
 
         if (response.statusCode == 201) {
-          // Success - product added
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Product added successfully!')),
           );
         } else {
-          // Failure - handle error
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to add product.')),
+            SnackBar(content: Text('Failed to add product: ${response.body}')),
           );
         }
       } catch (error) {
@@ -92,47 +90,40 @@ class _AddProductScreenState extends State<AddProductScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // Product Name Field
               TextFormField(
                 controller: _productNameController,
                 decoration: InputDecoration(labelText: 'Product Name'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter product name' : null,
               ),
-              // Price Field
               TextFormField(
                 controller: _priceController,
                 decoration: InputDecoration(labelText: 'Price'),
                 keyboardType: TextInputType.number,
                 validator: (value) => value!.isEmpty ? 'Enter price' : null,
               ),
-              // Category Field
               TextFormField(
                 controller: _categoryController,
                 decoration: InputDecoration(labelText: 'Category'),
                 validator: (value) => value!.isEmpty ? 'Enter category' : null,
               ),
-              // Product Details Field
               TextFormField(
                 controller: _productDetailsController,
                 decoration: InputDecoration(labelText: 'Product Details'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter product details' : null,
               ),
-              // Image Uploader
               SizedBox(height: 20),
               _imageFile != null
-                  ? Image.file(_imageFile!,
-                      height: 150, width: 150) // Show selected image
+                  ? Image.file(_imageFile!, height: 150, width: 150)
                   : Text('No image selected.'),
               ElevatedButton(
-                onPressed: _pickImage, // Pick image logic
+                onPressed: _pickImage,
                 child: Text('Upload Image'),
               ),
               Spacer(),
-              // Submit Button
               ElevatedButton(
-                onPressed: _submitForm, // Submit form logic
+                onPressed: _submitForm,
                 child: Text('Add Product'),
               ),
             ],

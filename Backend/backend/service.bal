@@ -81,30 +81,6 @@ service /api on new http:Listener(8080) {
     }
 
     // GET /api/products - Retrieve all product details
-    // resource function get products() returns Product[]|error {
-    //     Product[]|error products = getAllProducts();
-
-    //     if products is Product[] {
-    //         return products;
-    //     } else {
-    //         return error("Failed to retrieve products: " + products.message());
-    //     }
-    // }
-
-    // GET /api/products - Retrieve all product details
-    // resource function get products() returns json|error {
-    //     Product[]|error products = getAllProducts();
-
-    //     if products is Product[] {
-    //         // Return the list of products as a JSON array
-    //         return products;
-    //     } else {
-    //         // Return error message if retrieving products failed
-    //         return error("Failed to retrieve products: " + products.message());
-    //     }
-    // }
-
-    // GET /api/products - Retrieve all product details
     resource function get products() returns Product[]|error {
         Product[]|error products = getAllProducts();
 
@@ -117,7 +93,112 @@ service /api on new http:Listener(8080) {
         }
     }
 
+    // resource function post addProduct1(http:Caller caller, http:Request req) returns error? {
+
+    //     // Check if the content type is multipart/form-data
+    //     string? contentType = req.getContentType();
+    //     if contentType is string && contentType.startsWith(mime:MULTIPART_FORM_DATA) {
+    //         // Extract multipart data from the request
+    //         mime:Entity[] parts = check req.getBodyParts();
+
+    //         string productName = "";
+    //         string category = "";
+    //         string productDetails = "";
+    //         decimal price = 0;
+    //         string imageFilePath = "";
+
+    //         // Iterate through parts and extract data
+    //         foreach var part in parts {
+    //             // Retrieve the Content-Disposition header to get part name
+    //             var contentDispositionResult = part.getHeader(mime:CONTENT_DISPOSITION);
+
+    //             if contentDispositionResult is string {
+    //                 // Manually extract parameters from the Content-Disposition header
+    //                 map<string> parameters = extractContentDispositionParams(contentDispositionResult);
+    //                 string? partName = parameters["name"];
+
+    //                 if partName == "product_name" {
+    //                     productName = check part.getText();
+    //                 } else if partName == "price" {
+    //                     // Get price as text and convert to decimal
+    //                     string priceResult = check part.getText();
+    //                     price = check decimal:fromString(priceResult);
+    //                 } else if partName == "category" {
+    //                     category = check part.getText();
+    //                 } else if partName == "product_details" {
+    //                     productDetails = check part.getText();
+    //                 } else if partName == "image" {
+    //                     // Handle image part
+    //                     string? fileName = parameters["filename"];
+    //                     if fileName is string {
+    //                         byte[] fileContent = check part.getByteArray();
+
+    //                         // Save the image to a file
+    //                         string filePath = "./uploads/" + fileName;
+    //                         check io:fileWriteBytes(filePath, fileContent);
+
+    //                         imageFilePath = filePath;
+    //                     }
+    //                 }
+    //             } else {
+    //                 log:printError("Failed to retrieve Content-Disposition header: ", contentDispositionResult);
+    //             }
+    //         }
+
+    //         // Log the product details and file path for debugging
+    //         log:printInfo("Product Name: " + productName);
+    //         log:printInfo("Category: " + category);
+    //         log:printInfo("Product Details: " + productDetails);
+    //         log:printInfo("Price: " + price.toString());
+    //         log:printInfo("Image saved at: " + imageFilePath);
+
+    //         // Return a success response to the client
+    //         json response = {message: "Product added successfully", image_path: imageFilePath};
+    //         check caller->respond(response);
+    //     } else {
+    //         // If content type is not multipart, return an error
+    //         // json errorResponse = {error: "Invalid content type. Please upload multipart/form-data"};
+    //         // check caller->respond(errorResponse);
+    //     }
+
+    // }
 }
+
+// function extractContentDispositionParams(string contentDisposition) returns map<string> {
+//     map<string> params = {};
+
+//     int start1 = 0;
+//     int end = 0;
+//     string key = "";
+//     string value = "";
+
+//     while (true) {
+//         // Find the next semicolon
+//         end = contentDisposition.indexOf(";", start1);
+//         if (end == -1) {
+//             end = contentDisposition.length();
+//         }
+
+//         // Get the part before the semicolon
+//         string part = contentDisposition.substring(start, end).trim();
+
+//         // Check if there is an equal sign
+//         int equalIndex = part.indexOf("=");
+//         if (equalIndex != -1) {
+//             key = part.substring(0, equalIndex).trim();
+//             value = part.substring(equalIndex + 1).trim().replace("\"", "");
+//             params[key] = value;
+//         }
+
+//         // Move to the next part
+//         if (end == contentDisposition.length()) {
+//             break; // No more parts
+//         }
+//         start = end + 1;
+//     }
+
+//     return params;
+// }
 
 // Function to retrieve all products from the database
 

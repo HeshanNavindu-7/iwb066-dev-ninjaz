@@ -23,7 +23,7 @@ class _MarketPlaceScreenState extends State<MarketPlaceScreen> {
   // Function to fetch products from the backend
   Future<void> _fetchProducts() async {
     final url = Uri.parse(
-        'http://192.168.1.103:8080/api/products'); // Replace with your actual backend URL
+        'http://192.168.1.100:8080/api/products'); // Replace with your actual backend URL
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

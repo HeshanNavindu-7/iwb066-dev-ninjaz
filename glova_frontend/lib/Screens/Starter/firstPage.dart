@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:glova_frontend/Screens/Starter/secondPage.dart';
 
 class FirstPage extends StatelessWidget {
@@ -28,10 +27,10 @@ class FirstPage extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF004080),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Border radius
+                borderRadius: BorderRadius.circular(50), // Border radius
               ),
               padding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 10), // Padding
+                  horizontal: 100, vertical: 20), // Padding
             ), // Change button color here
 
             child: const Text(
