@@ -44,21 +44,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         Uri.parse('http://192.168.1.100:8080/api/addProduct'),
       );
 
-      // Add text fields as form fields
-      request.fields['product_name'] = _productNameController.text;
-      request.fields['price'] = _priceController.text;
-      request.fields['category'] = _categoryController.text;
-      request.fields['product_details'] = _productDetailsController.text;
-
-      // If an image is selected, add it as a multipart file
-      if (_imageFile != null) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'image', // field name in backend
-          _imageFile!.path,
-        ));
-      }
-
-      // Send the request
+      // Make the POST request to the backend
+      final url = Uri.parse(
+          'http://192.168.1.7:8080/api/addProduct'); // Replace with your backend URL
       try {
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
@@ -67,6 +55,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Product added successfully!')),
           );
+          // Optionally, clear the form after submission
+          _clearForm();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to add product: ${response.body}')),
@@ -80,53 +70,126 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
+  // Function to clear the form fields after submission
+  void _clearForm() {
+    _productNameController.clear();
+    _priceController.clear();
+    _categoryController.clear();
+    _productDetailsController.clear();
+    setState(() {
+      _imageFile = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Product')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _productNameController,
-                decoration: InputDecoration(labelText: 'Product Name'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter product name' : null,
-              ),
-              TextFormField(
-                controller: _priceController,
-                decoration: InputDecoration(labelText: 'Price'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Enter price' : null,
-              ),
-              TextFormField(
-                controller: _categoryController,
-                decoration: InputDecoration(labelText: 'Category'),
-                validator: (value) => value!.isEmpty ? 'Enter category' : null,
-              ),
-              TextFormField(
-                controller: _productDetailsController,
-                decoration: InputDecoration(labelText: 'Product Details'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter product details' : null,
-              ),
-              SizedBox(height: 20),
-              _imageFile != null
-                  ? Image.file(_imageFile!, height: 150, width: 150)
-                  : Text('No image selected.'),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text('Upload Image'),
-              ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Add Product'),
-              ),
-            ],
+      appBar: AppBar(
+        title: Text('Add Product'),
+        centerTitle: true, // Center the title
+        backgroundColor: Color.fromARGB(255, 173, 216, 230), // AppBar color
+      ),
+      body: SingleChildScrollView(
+        // Handle overflow
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Product Name Field
+                TextFormField(
+                  controller: _productNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Name',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter product name' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Price Field
+                TextFormField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'Price',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) => value!.isEmpty ? 'Enter price' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Category Field
+                TextFormField(
+                  controller: _categoryController,
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter category' : null,
+                ),
+                SizedBox(height: 10), // Spacing between text fields
+
+                // Product Details Field
+                TextFormField(
+                  controller: _productDetailsController,
+                  decoration: InputDecoration(
+                    labelText: 'Product Details',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                  ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter product details' : null,
+                ),
+                SizedBox(height: 20),
+
+                // Image Uploader
+                _imageFile != null
+                    ? Image.file(_imageFile!,
+                        height: 150, width: 150) // Show selected image
+                    : Text('No image selected.'),
+                ElevatedButton(
+                  onPressed: _pickImage, // Pick image logic
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                    // Button color
+                  ),
+                  child: Text('Upload Image'),
+                ),
+                SizedBox(height: 20), // Spacing before submit button
+
+                // Submit Button
+                ElevatedButton(
+                  onPressed: _submitForm, // Submit form logic
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Rounded corners
+                    ),
+                    backgroundColor:
+                        Color.fromARGB(255, 173, 216, 230), // Button color
+                  ),
+                  child: Text('Add Product'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

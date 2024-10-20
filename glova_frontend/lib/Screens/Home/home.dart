@@ -1,14 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:glova_frontend/APIs/doctorDetails.dart';
 import 'package:glova_frontend/APIs/userDetails.dart';
-import 'package:glova_frontend/Screens/Market/Market.dart';
 import 'package:glova_frontend/Screens/Other/aboutdoctor.dart';
-import 'package:glova_frontend/Screens/Other/ambulance.dart';
 import 'package:glova_frontend/Screens/Other/custom_bottom_navigation_bar.dart';
 import 'package:glova_frontend/Screens/Other/doctorRecommendation.dart';
-import 'package:glova_frontend/Screens/Other/hospitals.dart';
 import 'package:glova_frontend/Screens/Other/notifications.dart';
-import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -20,8 +17,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String? userName;
   String? doctorName;
-  // final ImageFilePicker imageFilePicker = ImageFilePicker();
-  final http.Client client = http.Client();
 
   @override
   void initState() {
@@ -107,50 +102,10 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildNavigationIcon(
-                      'assets/shop.png',
-                      'Market',
-                      () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MarketPlaceScreen()),
-                      ),
-                    ),
-                    // _buildNavigationIcon(
-                    //   // 'assets/carts.png',
-                    //   // 'Cart',
-                    //   // () => Navigator.pushReplacement(
-                    //   //   // context,
-                    //   //   // MaterialPageRoute(builder: (context) => const Cart()),
-                    //   // ),
-                    // ),
-                    _buildNavigationIcon(
-                      'assets/hospitals.png',
-                      'Hospital',
-                      () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Hospitals()),
-                      ),
-                    ),
-                    _buildNavigationIcon(
-                      'assets/ambulances.png',
-                      'Ambulance',
-                      () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Ambulance()),
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: _buildImageCarousel(),
                 ),
-                // Padding(
-                //   // padding: const EdgeInsets.all(25.0),
-                //   // child: _buildImageCarousel(),
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -184,12 +139,12 @@ class _HomeState extends State<Home> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(25),
-                  child: _buildDoctorCard(),
+                  child: _buildDoctorCards(),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                //   child: _buildFeaturedServices(),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _buildFeaturedProducts(),
+                ),
               ],
             ),
           ),
@@ -199,80 +154,45 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildNavigationIcon(
-      String imagePath, String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 3.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Container(
-          width: 80,
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image(
-                image: AssetImage(imagePath),
-                height: 40,
-                width: 40,
-              ),
-              const SizedBox(height: 8.0),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 12),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
+  Widget _buildDoctorCards() {
+    // Dummy doctor data with placeholder names and specialties
+    final List<Map<String, String>> doctors = [
+      {
+        'name': 'Dr. Sarah Johnson',
+        'specialty': 'Cardiologist',
+        'distance': '800m away'
+      },
+      {
+        'name': 'Dr. John Doe',
+        'specialty': 'Dermatologist',
+        'distance': '1.2km away'
+      },
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: doctors.map((doctor) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: _buildDoctorCard(
+              doctor['name']!,
+              doctor['specialty']!,
+              doctor['distance']!,
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 
-  // Widget _buildImageCarousel() {
-  //   return CarouselSlider(
-  //     options: CarouselOptions(
-  //       height: 110,
-  //       enlargeCenterPage: true,
-  //       autoPlay: true,
-  //       autoPlayCurve: Curves.fastOutSlowIn,
-  //       enableInfiniteScroll: true,
-  //       autoPlayAnimationDuration: Duration(milliseconds: 1000),
-  //       viewportFraction: 1,
-  //     ),
-  //     items: [
-  //       'assets/CarosalCard/img1.png',
-  //       'assets/CarosalCard/img2.png',
-  //       'assets/CarosalCard/img3.png'
-  //     ].map((imagePath) {
-  //       return Builder(
-  //         builder: (BuildContext context) {
-  //           return Container(
-  //             margin: EdgeInsets.all(5.0),
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(10.0),
-  //               image: DecorationImage(
-  //                 image: AssetImage(imagePath),
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     }).toList(),
-  //   );
-  // }
-
-  Widget _buildDoctorCard() {
+  Widget _buildDoctorCard(String name, String specialty, String distance) {
     return SizedBox(
-      width: 180, // Increased width for a better appearance
+      width: 160, // Adjusted width to avoid overflow
       child: Card(
-        elevation: 5, // Adds shadow to the card
+        elevation: 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Rounded corners
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,40 +201,37 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutDoctor(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const AboutDoctor()),
                 );
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.asset(
-                  'assets/Doctor1.png',
-                  height: 120,
+                  'assets/carosal/doc2.jpg',
+                  height: 100,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center, // Center items horizontally
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    doctorName ??
-                        'Doctor Name', // Provide a fallback if doctorName is null
+                    name,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center, // Center text alignment
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    'Cardiologist',
-                    style: TextStyle(
+                  const SizedBox(height: 4),
+                  Text(
+                    specialty,
+                    style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
@@ -323,34 +240,20 @@ class _HomeState extends State<Home> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 18,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 18),
                       const SizedBox(width: 4),
-                      const Text(
-                        '4.5', // Placeholder for rating
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      const Text('4.5',
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w500)),
                       const Spacer(),
-                      const Icon(
-                        Icons.location_on,
-                        color: Colors.grey,
-                        size: 14,
-                      ),
+                      const Icon(Icons.location_on,
+                          color: Colors.grey, size: 14),
                       const SizedBox(width: 4),
-                      const Text(
-                        '800m away',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      Text(distance,
+                          style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey)),
                     ],
                   ),
                 ],
@@ -362,68 +265,110 @@ class _HomeState extends State<Home> {
     );
   }
 
-  // Widget _buildFeaturedServices() {
-  //   return SizedBox(
-  //     height: 150,
-  //     child: ListView(
-  //       scrollDirection: Axis.horizontal,
-  //       children: [
-  //         _buildServiceCard(
-  //           'assets/service1.png',
-  //           'Service 1',
-  //           'Description for Service 1',
-  //         ),
-  //         _buildServiceCard(
-  //           'assets/service2.png',
-  //           'Service 2',
-  //           'Description for Service 2',
-  //         ),
-  //         _buildServiceCard(
-  //           'assets/service3.png',
-  //           'Service 3',
-  //           'Description for Service 3',
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _buildImageCarousel() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 130,
+        enlargeCenterPage: true,
+        autoPlay: true,
+        autoPlayCurve: Curves.fastOutSlowIn,
+        enableInfiniteScroll: true,
+        autoPlayAnimationDuration: const Duration(milliseconds: 1000),
+        viewportFraction: 1,
+      ),
+      items: [
+        'assets/carosal/img1.png',
+        'assets/carosal/img2.png',
+        'assets/carosal/img3.png',
+      ].map((imagePath) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              margin: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+  }
 
-  // Widget _buildServiceCard(String imagePath, String title, String description) {
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 8.0),
-  //     width: 120,
-  //     decoration: BoxDecoration(
-  //       border: Border.all(color: Colors.black, width: 1),
-  //       borderRadius: BorderRadius.circular(10),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         ClipRRect(
-  //           borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-  //           child: Image.asset(
-  //             imagePath,
-  //             height: 80,
-  //             width: double.infinity,
-  //             fit: BoxFit.cover,
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.all(8.0),
-  //           child: Text(
-  //             title,
-  //             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-  //           child: Text(
-  //             description,
-  //             style: TextStyle(fontSize: 12),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget _buildFeaturedProducts() {
+    // Dummy skincare products
+    final List<Map<String, String>> products = [
+      {'imagePath': 'assets/beauty.png', 'title': 'Aloe Vera Gel'},
+      {'imagePath': 'assets/carosal/p1.png', 'title': 'Vitamin C Serum'},
+      {'imagePath': 'assets/p2.jpg', 'title': 'Sunscreen SPF'},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Featured Skincare Products',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: products.map((product) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child:
+                    _buildProductCard(product['imagePath']!, product['title']!),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductCard(String imagePath, String title) {
+    return SizedBox(
+      width: 150,
+      height: 180,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.asset(
+                imagePath,
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

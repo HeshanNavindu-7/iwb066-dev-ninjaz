@@ -1,3 +1,4 @@
+// Add the required imports
 import 'dart:convert'; // Import this to handle JSON responses
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> signUp() async {
     String url =
-        'http://192.168.1.103:8080/api/addUser'; // Set your backend API URL here
+        'http://192.168.1.7:8080/api/addUser'; // Set your backend API URL here
 
     try {
       final response = await http.post(
@@ -104,7 +105,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -129,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           const Color(0xFF1A237E), // Modern blue shade
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(30), // Rounded button
+                            BorderRadius.circular(15), // Rounded button
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
@@ -166,7 +166,7 @@ class _SignUpPageState extends State<SignUpPage> {
           filled: true,
           fillColor: Colors.black.withOpacity(0.3),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(15), // Rounded corners
             borderSide: BorderSide.none,
           ),
         ),
@@ -188,7 +188,7 @@ class _SignUpPageState extends State<SignUpPage> {
           filled: true,
           fillColor: Colors.black.withOpacity(0.3),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(15), // Rounded corners
             borderSide: BorderSide.none,
           ),
         ),
